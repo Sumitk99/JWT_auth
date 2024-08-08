@@ -49,18 +49,15 @@ func SignUp() gin.HandlerFunc {
 		var ctx, cancel = context.WithTimeout(context.Background(), 100*time.Second)
 		var user models.User
 		defer cancel()
-		fmt.Println("getting input")
 		if err := c.BindJSON(&user); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-		fmt.Println("Validating input")
 		validationErr := validate.Struct(user)
 		if validationErr != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": validationErr.Error()})
 			return
 		}
-		fmt.Println("checking if already exists")
 		count, err := userCollection.CountDocuments(ctx, bson.M{"email": user.Email})
 		defer cancel()
 		if err != nil {
@@ -68,10 +65,8 @@ func SignUp() gin.HandlerFunc {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "error with email"})
 			return
 		}
-		fmt.Println("Hashing Password")
 		password := HashPassword(*user.Password)
 		user.Password = &password
-		fmt.Println("Checking phone ")
 		count, err = userCollection.CountDocuments(ctx, bson.M{"phone": user.Phone})
 		if err != nil {
 			fmt.Println(err)
@@ -88,13 +83,11 @@ func SignUp() gin.HandlerFunc {
 		user.UpdatedAt, _ = time.Parse(time.RFC3339, time.Now().Format(time.RFC3339))
 		user.ID = primitive.NewObjectID()
 		user.UserId = user.ID.Hex()
-		fmt.Println("Creating Token ")
 		token, refreshToken, err := helper.GenerateAllTokens(*user.Email, *user.FirstName, *user.LastName, *user.UserType, user.UserId)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			//return
 		}
-		fmt.Println("Token Created ")
 		user.Token = &token
 		user.RefreshToken = &refreshToken
 
@@ -224,14 +217,14 @@ func GetUsers() gin.HandlerFunc {
 		projectStage := bson.D{
 			{
 				"$project", bson.D{
-					{"_id", 0},
-					{"total_count", 1},
-					{"user_items", bson.D{
-						{"$slice", []interface{}{
-							"$data", startIndex, recordPerPage,
-						}},
+				{"_id", 0},
+				{"total_count", 1},
+				{"user_items", bson.D{
+					{"$slice", []interface{}{
+						"$data", startIndex, recordPerPage,
 					}},
-				},
+				}},
+			},
 			},
 		}
 

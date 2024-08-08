@@ -47,19 +47,22 @@ func GenerateAllTokens(email, firstName, lastName, userType, uid string) (singed
 	}
 	fmt.Println("created refresh claims")
 
-	token, err := jwt.NewWithClaims(jwt.SigningMethodES256, claims).SignedString([]byte(SECRET_KEY))
+	//token, err := jwt.NewWithClaims(jwt.SigningMethodES256, claims).SignedString([]byte(SECRET_KEY))
+	singedToken, err = jwt.NewWithClaims(jwt.SigningMethodNone, claims).SignedString(jwt.UnsafeAllowNoneSignatureType)
 	fmt.Println("created tokens")
-	fmt.Println(token)
+	fmt.Println(singedToken)
 	fmt.Println(err)
-	refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodES256, refreshClaims).SignedString([]byte(SECRET_KEY))
+	singedRefreshToken, err = jwt.NewWithClaims(jwt.SigningMethodNone, refreshClaims).SignedString(jwt.UnsafeAllowNoneSignatureType)
+
+	//refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodES256, refreshClaims).SignedString([]byte(SECRET_KEY))
 	fmt.Println("created refresh tokens")
-	fmt.Println(token)
+	fmt.Println(singedRefreshToken)
 	fmt.Println(err)
 	if err != nil {
 		return
 	}
 	fmt.Println("over")
-	return token, refreshToken, err
+	return
 }
 
 func UpdateAllTokens(singedToken, signedRefreshToken, userId string) {
