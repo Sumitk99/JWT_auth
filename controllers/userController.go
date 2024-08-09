@@ -86,7 +86,7 @@ func SignUp() gin.HandlerFunc {
 		token, refreshToken, err := helper.GenerateAllTokens(*user.Email, *user.FirstName, *user.LastName, *user.UserType, user.UserId)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-			//return
+			return
 		}
 		user.Token = &token
 		user.RefreshToken = &refreshToken
@@ -217,14 +217,14 @@ func GetUsers() gin.HandlerFunc {
 		projectStage := bson.D{
 			{
 				"$project", bson.D{
-				{"_id", 0},
-				{"total_count", 1},
-				{"user_items", bson.D{
-					{"$slice", []interface{}{
-						"$data", startIndex, recordPerPage,
+					{"_id", 0},
+					{"total_count", 1},
+					{"user_items", bson.D{
+						{"$slice", []interface{}{
+							"$data", startIndex, recordPerPage,
+						}},
 					}},
-				}},
-			},
+				},
 			},
 		}
 

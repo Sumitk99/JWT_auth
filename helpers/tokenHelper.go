@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	//"log"
-	"os"
+	//"os"
 	"time"
 )
 
@@ -25,7 +25,7 @@ type SignedDetails struct {
 
 var userCollection *mongo.Collection = database.OpenCollection(database.Client, "user")
 
-var SECRET_KEY string = os.Getenv("SECRET_KEY")
+var SECRET_KEY = []byte("secret-key")
 
 func GenerateAllTokens(email, firstName, lastName, userType, uid string) (singedToken string, singedRefreshToken string, err error) {
 	claims := &SignedDetails{
@@ -47,16 +47,14 @@ func GenerateAllTokens(email, firstName, lastName, userType, uid string) (singed
 	}
 	fmt.Println("created refresh claims")
 
-	//token, err := jwt.NewWithClaims(jwt.SigningMethodES256, claims).SignedString([]byte(SECRET_KEY))
-	singedToken, err = jwt.NewWithClaims(jwt.SigningMethodNone, claims).SignedString(jwt.UnsafeAllowNoneSignatureType)
+	singedToken, err = jwt.NewWithClaims(jwt.SigningMethodHS256, claims).SignedString(SECRET_KEY)
+	//singedToken, err = jwt.NewWithClaims(jwt.SigningMethodNone, claims).SignedString(jwt.UnsafeAllowNoneSignatureType)
 	fmt.Println("created tokens")
-	fmt.Println(singedToken)
 	fmt.Println(err)
-	singedRefreshToken, err = jwt.NewWithClaims(jwt.SigningMethodNone, refreshClaims).SignedString(jwt.UnsafeAllowNoneSignatureType)
+	//singedRefreshToken, err = jwt.NewWithClaims(jwt.SigningMethodNone, refreshClaims).SignedString(jwt.UnsafeAllowNoneSignatureType)
 
-	//refreshToken, err := jwt.NewWithClaims(jwt.SigningMethodES256, refreshClaims).SignedString([]byte(SECRET_KEY))
+	singedRefreshToken, err = jwt.NewWithClaims(jwt.SigningMethodHS256, refreshClaims).SignedString(SECRET_KEY)
 	fmt.Println("created refresh tokens")
-	fmt.Println(singedRefreshToken)
 	fmt.Println(err)
 	if err != nil {
 		return
