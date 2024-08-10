@@ -64,9 +64,13 @@ This repository contains a JWT (JSON Web Token) authentication service built wit
     **Request Body**:
     ```json
     {
-        "username": "exampleuser",
-        "password": "examplepassword"
-    }
+    "first_name":"sumit",
+    "last_name":"kumar",
+    "email":"sumit2k19kumar@gmail.com",
+    "password":"password",
+    "user_type":"USER",
+    "phone":"1234567890"
+	}
     ```
 
 - **POST /login**: Login and receive a JWT token.
