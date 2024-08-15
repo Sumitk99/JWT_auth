@@ -10,7 +10,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	//"log"
-	//"os"
+	"os"
 	"time"
 )
 
@@ -25,7 +25,7 @@ type SignedDetails struct {
 
 var userCollection *mongo.Collection = database.OpenCollection(database.Client, "user")
 
-var SECRET_KEY = []byte("secret-key")
+var SECRET_KEY = []byte(os.Getenv("SECRET_KEY"))
 
 func GenerateAllTokens(email, firstName, lastName, userType, uid string) (singedToken string, singedRefreshToken string, err error) {
 	claims := &SignedDetails{
