@@ -90,7 +90,7 @@ This repository contains a JWT (JSON Web Token) authentication service built wit
 
     **Headers**:
     ```plaintext
-    Authorization: Bearer your_jwt_token
+    token: Bearer your_jwt_token
     ```
 
 ## Middleware
